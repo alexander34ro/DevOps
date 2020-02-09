@@ -3,8 +3,13 @@ const app = express();
 const bodyParser = require("body-parser");
 const routes = require("./routes/routes");
 const cors = require('cors');
+const mongoose = require('mongoose');
 
 app.use(cors());
+
+const dbPassword = 'nIfTcQjmAOFWH2kH'
+
+mongoose.connect('mongodb+srv://admin:' + dbPassword + '@cluster0-zb0x5.mongodb.net/test?retryWrites=true&w=majority',{ useNewUrlParser: true, useUnifiedTopology: true });
 
 
 let port = process.env.PORT || 8080;
