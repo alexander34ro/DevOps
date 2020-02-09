@@ -5,6 +5,8 @@ const cors = require('cors');
 const app = express();
 
 const User = require('../models/user');
+const Follower = require('../models/follower');
+const Message = require('../models/message');
 
 app.use(cors());
 
@@ -16,8 +18,19 @@ router.get('/public', (req, res, next) => {
     res.status(200).json({'response': '/public works'});
 })
 
-router.get('/username', (req, res, next) => {
-    res.status(200).json({'response': '/username works'});
+router.get('/:username', (req, res, next) => {
+    const username = req.params.username;
+    User.findOne({
+        'username': username
+    })
+    .exec()
+    .then(result => {
+        res.status(200).json(result);
+    })
+    .catch(err => {
+        console.log(err);
+        res.status(500).json({error: err})
+    } )
 })
 
 router.get('/username/follow', (req, res, next) => {
@@ -47,7 +60,7 @@ router.post('/login', (req, res, next) => {
     .then(result => console.log(result))
     .catch(err => console.log(err));
 
-    res.status(201).json(
+    res.status(200).json(
         {
         'result': 'success',
         'body': req.body
