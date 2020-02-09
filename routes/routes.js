@@ -4,7 +4,8 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const app = express();
 
-// const User = require('../models/user');
+const User = require('../models/user');
+
 app.use(cors());
 
 router.get('/', (req, res, next) => {
@@ -36,7 +37,22 @@ router.get('/login', (req, res, next) => {
 })
 
 router.post('/login', (req, res, next) => {
-    res.status(200).json({'response': '/login works'});
+    const newUser = new User({
+        _id: new mongoose.Types.ObjectId(),
+        username: req.body.username,
+        email: req.body.email,
+        pw_hash: req.body.password
+    });
+    newUser.save()
+    .then(result => console.log(result))
+    .catch(err => console.log(err));
+
+    res.status(201).json(
+        {
+        'result': 'success',
+        'body': req.body
+        }
+    );
 })
 
 router.get('/register', (req, res, next) => {
