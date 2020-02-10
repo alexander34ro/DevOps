@@ -10,6 +10,13 @@ const Message = require('../models/message');
 
 app.use(cors());
 
+let currentUser = {
+    user_id: null,
+    username: null,
+    email: null,
+    pw_hash: null
+};
+
 router.get('/', (req, res, next) => {
     res.status(200).json({'response': '/ works'});
 })
@@ -28,28 +35,117 @@ router.get('/:username', (req, res, next) => {
         res.status(200).json(result);
     })
     .catch(err => {
+        res.status(500).json({error: err})
+    });
+})
+
+router.get('/:username/follow', (req, res, next) => {
+    const usernameToFollow = req.params.username;
+    User.findOne({
+        'username': usernameToFollow
+    })
+    .exec()
+    .then(result => {
+        if(result == null){
+            res.status(404).json({"message": "username to follow non existent"})
+        } else {
+            const newFollower = new Follower({
+                who_id: currentUser.username,
+                whom_id: usernameToFollow
+            });
+            newFollower.save()
+            .then(result => {
+                res.status(200).json(
+                    {
+                    'result': result,
+                    'body': req.body
+                    }
+                );
+            })
+            .catch(err => console.log(err));
+        }
+    })
+    .catch(err => {
         console.log(err);
         res.status(500).json({error: err})
     } )
 })
 
-router.get('/username/follow', (req, res, next) => {
-    res.status(200).json({'response': '/username/follow works'});
+router.get('/:username/unfollow', (req, res, next) => {
+    const usernameToFollow = req.params.username;
+    User.findOne({
+        'username': usernameToFollow
+    })
+    .exec()
+    .then(result => {
+        if(result == null){
+            res.status(404).json({"message": "username to unfollow non existent"})
+        } else {
+            Follower.findOneAndDelete({
+                who_id: currentUser.username,
+                whom_id: usernameToFollow
+            })
+            .then(result => {
+                res.status(200).json(
+                    {
+                    'result': result,
+                    'body': req.body
+                    }
+                );
+            })
+            .catch(err => console.log(err));
+        }
+    })
+    .catch(err => {
+        console.log(err);
+        res.status(500).json({error: err})
+    } )
 })
 
-router.get('/username/unfollow', (req, res, next) => {
-    res.status(200).json({'response': '/username/unfollow works'});
-})
-
-router.post('/username/add_message', (req, res, next) => {
-    res.status(200).json({'response': '/username/add_message works'});
-})
-
-router.get('/login', (req, res, next) => {
-    res.status(200).json({'response': '/login works'});
+router.post('/add_message', (req, res, next) => {
+    const newMessage = new Message({
+        message_id: new mongoose.Types.ObjectId(),
+        author_id: currentUser.user_id,
+        text: req.body.text,
+        pub_date: new Date(),
+        flagged: req.body.flagged
+    });
+    newMessage.save()
+    .then(result => {
+        res.status(200).json(
+            {
+            'result': result,
+            'body': req.body
+            }
+        );
+    })
+    .catch(err => console.log(err));
 })
 
 router.post('/login', (req, res, next) => {
+    const username = req.body.username;
+    const password = req.body.password;
+    User.findOne({
+        'username': username,
+        'pw_hash': password
+    })
+    .exec()
+    .then(result => {
+        if(result == null){
+            currentUser = null;
+            res.status(404).json({"message": "NOT VALID login credentials"})
+        } else {
+            currentUser = result;
+            res.status(200).json({"message": "VALID login credentials"});
+        }
+    })
+    .catch(err => {
+        console.log(err);
+        res.status(500).json({error: err})
+    } )
+})
+
+router.post('/register', (req, res, next) => {
     const newUser = new User({
         _id: new mongoose.Types.ObjectId(),
         username: req.body.username,
@@ -57,27 +153,20 @@ router.post('/login', (req, res, next) => {
         pw_hash: req.body.password
     });
     newUser.save()
-    .then(result => console.log(result))
+    .then(result => {
+        res.status(200).json(
+            {
+            'result': result,
+            'body': req.body
+            }
+        );
+    })
     .catch(err => console.log(err));
-
-    res.status(200).json(
-        {
-        'result': 'success',
-        'body': req.body
-        }
-    );
-})
-
-router.get('/register', (req, res, next) => {
-    res.status(200).json({'response': '/register works'});
-})
-
-router.post('/register', (req, res, next) => {
-    res.status(200).json({'response': '/register works'});
 })
 
 router.get('/logout', (req, res, next) => {
-    res.status(200).json({'response': '/logout works'});
+    currentUser = null;
+    res.status(200).json({'response': 'user logged out'});
 })
 
 module.exports = router;
