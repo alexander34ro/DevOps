@@ -8,9 +8,9 @@ function App() {
   const dummy_flashes = ["this is a test flash msg", "this is another test flash msg"]
   return (
     <div className="App">
-      <Nav name="joe" />
     <div className="page">
         <h1>MiniTwit</h1>
+      <Nav name="joe" />
       <Flashes msgs={dummy_flashes} />
         <div className="body">
           {/* {'{'}% block body %{'}'}{'{'}% endblock %{'}'} */}
