@@ -18,7 +18,11 @@ let currentUser = {
 };
 
 router.get('/', (req, res, next) => {
-    res.status(200).json({'response': '/ works'});
+    Message.find().exec().
+    then(result=>{  res.status(200).json({result});})
+    .catch(err => {
+        res.status(500).json({error: err})
+    });
 })
 
 router.get('/public', (req, res, next) => {
