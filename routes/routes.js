@@ -3,6 +3,7 @@ const router = express.Router();
 const mongoose = require('mongoose');
 const cors = require('cors');
 const app = express();
+const bcrypt = require('bcrypt');
 
 const User = require('../models/user');
 const Follower = require('../models/follower');
@@ -189,22 +190,44 @@ router.post('/login', (req, res, next) => {
 })
 
 router.post('/register', (req, res, next) => {
-    const newUser = new User({
-        _id: new mongoose.Types.ObjectId(),
-        username: req.body.username,
-        email: req.body.email,
-        pw_hash: req.body.password
-    });
-    newUser.save()
-        .then(result => {
-            res.status(200).json(
-                {
-                    'result': result,
-                    'body': req.body
+    User.find({
+        'username': req.body.username
+    })
+    .then(user => {
+        if(user.length>=1){
+            return res.status(409).json({
+                message: "username already exists"
+            })
+        } else {
+            bcrypt.hash(req.body.password, 10, (err, hash) => {
+                if(err){
+                    return res.status(500).json({
+                        error: err
+                    })
+                } else {
+                    const newUser = new User({
+                        _id: new mongoose.Types.ObjectId(),
+                        username: req.body.username,
+                        email: req.body.email,
+                        pw_hash: hash
+                    })
+                    newUser.save()
+                    .then(result => {
+                        res.status(200).json(
+                            {
+                                'result': result
+                            }
+                        );
+                    })
+                    .catch(err => res.status(500).json({
+                        error: err
+                    }));
                 }
-            );
-        })
-        .catch(err => console.log(err));
+            });
+        }
+    })
+    
+
 })
 
 router.get('/logout', (req, res, next) => {
