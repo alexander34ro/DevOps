@@ -11,40 +11,55 @@ const Message = require('../models/message');
 app.use(cors());
 
 let currentUser = {
-    user_id: null,
+    _id: null,
     username: null,
     email: null,
     pw_hash: null
 };
 
 router.get('/', (req, res, next) => {
-    
-    User.findOne({
-        'user_id': currentUser.user_id
-    })
-    .exec()
-    .then(result => {
-        if(result == null){
-            res.status(404).json({"message": "no such user"})
-        } else {
-            
-            Message.find({
-                $or: [ { 'author_id': currentUser.user_id}, { 'author_id': currentUser.user_id } ]  
+    console.log('currentUser', currentUser);
+    if (!currentUser._id) {
+        // user is not logged -> redirect to public
+        res.redirect('/public');
+    } else {
+        Follower.findOne({
+            'who_id': currentUser._id
+        })
+            .then(followerUser => {
+                Promise.all([
+                    Message.findOne({
+                        'author_id': currentUser._id
+                    }),
+                    Message.findOne({
+                        'author_id': followerUser.whom_id
+                    })
+                ])
+                    .then(messages => {
+                        res.status(200).json({
+                            'result': messages
+                        });
+                    })
+                    .catch(err => {
+                        res.status(500).json({
+                            'err': err
+                        })
+                    })
             })
-        }
-    })
-    .catch(err => {
-        console.log(err);
-        res.status(500).json({error: err})
-    } )
+            .catch(err => {
+                res.status(500).json({ 'err': err });
+            })
+    }
 })
 
 router.get('/public', (req, res, next) => {
-    Message.find().exec().
-    then(result=>{  res.status(200).json({result});})
-    .catch(err => {
-        res.status(500).json({error: err})
-    });
+    Message.find()
+        .then(result => {
+            res.status(200).json({ result });
+        })
+        .catch(err => {
+            res.status(500).json({ error: err })
+        });
 })
 
 router.get('/:username', (req, res, next) => {
@@ -52,12 +67,21 @@ router.get('/:username', (req, res, next) => {
     User.findOne({
         'username': username
     })
-    .exec()
-    .then(result => {
-        res.status(200).json(result);
+    .then(user => {
+        Message.find({
+            'author_id': user._id
+        })
+        .then(userMessages => {
+            res.status(200).json({
+                'response': userMessages
+            })
+        })
+        .catch(err => {
+            res.status(500).json({error: err})
+        })
     })
     .catch(err => {
-        res.status(500).json({error: err})
+        res.status(500).json({ error: err })
     });
 })
 
@@ -66,31 +90,30 @@ router.get('/:username/follow', (req, res, next) => {
     User.findOne({
         'username': usernameToFollow
     })
-    .exec()
-    .then(result => {
-        if(result == null){
-            res.status(404).json({"message": "username to follow non existent"})
-        } else {
-            const newFollower = new Follower({
-                who_id: currentUser.username,
-                whom_id: usernameToFollow
-            });
-            newFollower.save()
-            .then(result => {
-                res.status(200).json(
-                    {
-                    'result': result,
-                    'body': req.body
-                    }
-                );
-            })
-            .catch(err => console.log(err));
-        }
-    })
-    .catch(err => {
-        console.log(err);
-        res.status(500).json({error: err})
-    } )
+        .exec()
+        .then(user => {
+            if (user == null) {
+                res.status(404).json({ "message": "username to follow non existent" })
+            } else {
+                const newFollower = new Follower({
+                    who_id: currentUser._id,
+                    whom_id: user._id
+                });
+                newFollower.save()
+                    .then(result => {
+                        res.status(200).json(
+                            {
+                                'result': result
+                            }
+                        );
+                    })
+                    .catch(err => console.log(err));
+            }
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({ error: err })
+        })
 })
 
 router.get('/:username/unfollow', (req, res, next) => {
@@ -98,50 +121,48 @@ router.get('/:username/unfollow', (req, res, next) => {
     User.findOne({
         'username': usernameToFollow
     })
-    .exec()
-    .then(result => {
-        if(result == null){
-            res.status(404).json({"message": "username to unfollow non existent"})
-        } else {
-            Follower.findOneAndDelete({
-                who_id: currentUser.username,
-                whom_id: usernameToFollow
-            })
-            .then(result => {
-                res.status(200).json(
-                    {
-                    'result': result,
-                    'body': req.body
-                    }
-                );
-            })
-            .catch(err => console.log(err));
-        }
-    })
-    .catch(err => {
-        console.log(err);
-        res.status(500).json({error: err})
-    } )
+        .exec()
+        .then(user => {
+            if (user == null) {
+                res.status(404).json({ "message": "username to unfollow non existent" })
+            } else {
+                Follower.findOneAndDelete({
+                    who_id: currentUser._id,
+                    whom_id: user._id
+                })
+                    .then(result => {
+                        res.status(200).json(
+                            {
+                                'result': result
+                            }
+                        );
+                    })
+                    .catch(err => console.log(err));
+            }
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({ error: err })
+        })
 })
 
 router.post('/add_message', (req, res, next) => {
     const newMessage = new Message({
         message_id: new mongoose.Types.ObjectId(),
-        author_id: currentUser.user_id,
+        author_id: currentUser._id,
         text: req.body.text,
         pub_date: new Date(),
         flagged: req.body.flagged
     });
     newMessage.save()
-    .then(result => {
-        res.status(200).json(
-            {
-            'result': result,
-            'body': req.body
-            }
-        );
-    })
-    .catch(err => console.log(err));
+        .then(result => {
+            res.status(200).json(
+                {
+                    'result': result
+                }
+            );
+        })
+        .catch(err => console.log(err));
 })
 
 router.post('/login', (req, res, next) => {
@@ -151,20 +172,20 @@ router.post('/login', (req, res, next) => {
         'username': username,
         'pw_hash': password
     })
-    .exec()
-    .then(result => {
-        if(result == null){
-            currentUser = null;
-            res.status(404).json({"message": "NOT VALID login credentials"})
-        } else {
-            currentUser = result;
-            res.status(200).json({"message": "VALID login credentials"});
-        }
-    })
-    .catch(err => {
-        console.log(err);
-        res.status(500).json({error: err})
-    } )
+        .exec()
+        .then(result => {
+            if (result == null) {
+                currentUser = null;
+                res.status(404).json({ "message": "NOT VALID login credentials" })
+            } else {
+                currentUser = result;
+                res.status(200).json({ "message": "VALID login credentials" });
+            }
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({ error: err })
+        })
 })
 
 router.post('/register', (req, res, next) => {
@@ -175,20 +196,20 @@ router.post('/register', (req, res, next) => {
         pw_hash: req.body.password
     });
     newUser.save()
-    .then(result => {
-        res.status(200).json(
-            {
-            'result': result,
-            'body': req.body
-            }
-        );
-    })
-    .catch(err => console.log(err));
+        .then(result => {
+            res.status(200).json(
+                {
+                    'result': result,
+                    'body': req.body
+                }
+            );
+        })
+        .catch(err => console.log(err));
 })
 
 router.get('/logout', (req, res, next) => {
     currentUser = null;
-    res.status(200).json({'response': 'user logged out'});
+    res.status(200).json({ 'response': 'user logged out' });
 })
 
 module.exports = router;
