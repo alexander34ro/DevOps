@@ -18,15 +18,33 @@ let currentUser = {
 };
 
 router.get('/', (req, res, next) => {
+    
+    User.findOne({
+        'user_id': currentUser.user_id
+    })
+    .exec()
+    .then(result => {
+        if(result == null){
+            res.status(404).json({"message": "no such user"})
+        } else {
+            
+            Message.find({
+                $or: [ { 'author_id': currentUser.user_id}, { 'author_id': currentUser.user_id } ]  
+            })
+        }
+    })
+    .catch(err => {
+        console.log(err);
+        res.status(500).json({error: err})
+    } )
+})
+
+router.get('/public', (req, res, next) => {
     Message.find().exec().
     then(result=>{  res.status(200).json({result});})
     .catch(err => {
         res.status(500).json({error: err})
     });
-})
-
-router.get('/public', (req, res, next) => {
-    res.status(200).json({'response': '/public works'});
 })
 
 router.get('/:username', (req, res, next) => {
