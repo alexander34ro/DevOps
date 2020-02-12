@@ -9,9 +9,6 @@ class Nav extends Component {
       username : name,
     }
   }
-  componentDidMount(){
-    document.title = "dfsdfsdfsd"
-  }
   render() {
     const isLogged = this.state.isLogged;
     const username = this.state.username;

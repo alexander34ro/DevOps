@@ -1,6 +1,4 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
 import Nav from "./components/Nav"
 
 function App() {
@@ -23,18 +21,6 @@ function App() {
 }
 
 function Flashes(props){
-        // {/* {'{'}% with flashes = get_flashed_messages() %{'}'} */}
-        // {/* {'{'}% if flashes %{'}'} */}
-        // <ul className="flashes">
-        //   {/* {'{'}% for message in flashes %{'}'} */}
-        //   <li>
-        //     {/* {'{'}{'{'} message {'}'}{'}'} */}
-        //     {/* {'{'}% endfor %{'}'} */}
-        //   </li></ul>
-        // {/* {'{'}% endif %{'}'} */}
-        // {/* {'{'}% endwith %{'}'} */}
-  // console.log(msgs)
-  // const msgs = ["test flashes"]
   const msgs = props.flashes_msgs
   if (msgs) {
     const flashes = msgs.map((msg) =>
