@@ -2,6 +2,8 @@ import React from 'react';
 import Nav from "./components/Nav"
 import Flashes from "./components/Flashes"
 import Login from "./components/Login"
+import Register from "./components/Register"
+import Timeline from "./components/Timeline"
 
 function App() {
   // TODO: fetches flash message
@@ -14,7 +16,9 @@ function App() {
       <Flashes msgs={dummy_flashes} />
         <div className="body">
           {/* {'{'}% block body %{'}'}{'{'}% endblock %{'}'} */}
-          <Login/>
+          {/* <Login/> */}
+          {/* <Register/> */}
+          <Timeline/>
         </div>
         <div className="footer">
           MiniTwit — A Flask Application
