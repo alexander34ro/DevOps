@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const app = express();
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 const User = require('../models/user');
 const Follower = require('../models/follower');
@@ -19,7 +20,6 @@ let currentUser = {
 };
 
 router.get('/', (req, res, next) => {
-    console.log('currentUser', currentUser);
     if (!currentUser._id) {
         // user is not logged -> redirect to public
         res.redirect('/public');
@@ -29,16 +29,16 @@ router.get('/', (req, res, next) => {
         })
             .then(followerUser => {
                 Promise.all([
-                    Message.findOne({
+                    Message.find({
                         'author_id': currentUser._id
                     }),
-                    Message.findOne({
+                    Message.find({
                         'author_id': followerUser.whom_id
                     })
                 ])
                     .then(messages => {
                         res.status(200).json({
-                            'result': messages
+                            'result': Array.prototype.concat.apply([], messages)
                         });
                     })
                     .catch(err => {
@@ -169,18 +169,33 @@ router.post('/add_message', (req, res, next) => {
 router.post('/login', (req, res, next) => {
     const username = req.body.username;
     const password = req.body.password;
-    User.findOne({
-        'username': username,
-        'pw_hash': password
+    User.find({
+        'username': username
     })
-        .exec()
-        .then(result => {
-            if (result == null) {
-                currentUser = null;
-                res.status(404).json({ "message": "NOT VALID login credentials" })
+        .then(user => {
+            if (user.length<1) {    
+                res.status(401).json({ "message": "Auth failed" })
             } else {
-                currentUser = result;
-                res.status(200).json({ "message": "VALID login credentials" });
+                bcrypt.compare(password, user[0].pw_hash, (err, result) => {
+                    if(err || !result){
+                        return res.status(401).json({
+                            "message": "Auth failed"
+                        })
+                    }
+                    if(result){
+                        // const token = jwt.sign({
+                        //     username: user[0].username,
+                        //     _id: user[0]._id
+                        // }, "jwt_pw", {
+                        //     expiresIn:"1h"
+                        // })
+                        currentUser = user[0];
+                        return res.status(200).json({
+                            message:"Auth successful"
+                            // token: token
+                        })
+                    }
+                })
             }
         })
         .catch(err => {
