@@ -1,10 +1,21 @@
 const test = require("ava");
 
-test("foo", t => {
+test("register", t => {
+    let rv = null;
+    t.pass();
+});
+
+test("login_logout", t => {
+  let rv = null;
   t.pass();
 });
 
-test("bar", async t => {
-  const bar = Promise.resolve("bar");
-  t.is(await bar, "bar");
+test("message_recording", t => {
+  let rv = null;
+  t.pass();
+});
+
+test("timelines", t => {
+  let rv = null;
+  t.pass();
 });
