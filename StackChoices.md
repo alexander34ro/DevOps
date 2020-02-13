@@ -1,3 +1,13 @@
+The discussion that went into choosing our main stack can be found in Issue #15
+
+For front-end we went with X as discussed in Issue #18
+
+Our test suite uses Ava. This has been thoroughly discussed in Issue #20
+
+
+Before contributing, please make sure you are clear on our guidelines (Contribute.md)
+
+
 We end up choosing  **Node + React + MongoDB**  as the final components for our stack. The reasons for this are both technical and non-tech:
 
 -   better performance
