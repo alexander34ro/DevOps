@@ -17,6 +17,16 @@ test.before(async () => {
 	await mongoose.connect(uri, {useMongoClient: true});
 });
 
+// Add dummy data to Mongoose before each test is run
+test.beforeEach(async () => {
+  const user = new User({
+    username: "foobar",
+    email: "foo@bar.com",
+    pw_hash: "pff" 
+  });
+  await user.save();
+});
+
 test("register", t => {
     let rv = null;
     t.pass();
