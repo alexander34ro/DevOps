@@ -8,6 +8,15 @@ const User = require('./models/user');
 const Message = require('./models/message');
 const Follower = require('./models/follower');
 
+// Start MongoDB instance
+const mongod = new MongoMemoryServer()
+
+// Create connection to Mongoose before tests are run
+test.before(async () => {
+	const uri = await mongod.getConnectionString();
+	await mongoose.connect(uri, {useMongoClient: true});
+});
+
 test("register", t => {
     let rv = null;
     t.pass();
