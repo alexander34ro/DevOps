@@ -1,4 +1,11 @@
 const test = require("ava");
+const request = require("supertest");
+const { MongoMemoryServer } = require("mongodb-memory-server");
+const mongoose = require("mongoose");
+
+const User = require('./models/user');
+const Message = require('./models/message');
+const Follower = require('./models/follower');
 
 test("register", t => {
     let rv = null;
