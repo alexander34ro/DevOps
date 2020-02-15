@@ -8,6 +8,7 @@ As discussed in [Issue #26](https://github.com/alexander34ro/DevOps/issues/26), 
 
 Before contributing, please make sure you are clear on our guidelines (Contribute.md)
 
+------------
 
 We end up choosing  **Node + React + MongoDB**  as the final components for our stack. The reasons for this are both technical and non-tech:
 
