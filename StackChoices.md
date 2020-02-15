@@ -1,9 +1,10 @@
-The discussion that went into choosing our main stack can be found in Issue #15
+The discussion that went into choosing our main stack can be found in [Issue #15](https://github.com/alexander34ro/DevOps/issues/15)
 
-For front-end we went with X as discussed in Issue #18
+For front-end we went with X as discussed in [Issue #18](https://github.com/alexander34ro/DevOps/issues/18)
 
-Our test suite uses Ava. This has been thoroughly discussed in Issue #20
+Our test suite uses Ava. This has been thoroughly discussed in [Issue #20](https://github.com/alexander34ro/DevOps/issues/20)
 
+As discussed in [Issue #26](https://github.com/alexander34ro/DevOps/issues/26), we prefer Mongoose over both the native driver and Sequelize.
 
 Before contributing, please make sure you are clear on our guidelines (Contribute.md)
 
