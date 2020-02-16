@@ -20,7 +20,9 @@ Our test suite uses Ava. This has been thoroughly discussed in [Issue #20](https
 
 As discussed in [Issue #26](https://github.com/alexander34ro/DevOps/issues/26), we prefer Mongoose over both the native driver and Sequelize.
 
-Before contributing, please make sure you are clear on our guidelines (Contribute.md)
+For our infrastructure, we chose to deploy MiniTwit to Heroku using Dynos and Docker for virtualization. A discussion on this topic can be found in [Issue #27](https://github.com/alexander34ro/DevOps/issues/27)
+
+Please read our guidelines before contributing to this repository. ([Contribute.md](https://github.com/alexander34ro/DevOps/blob/master/Contribute.md))
 
 ---
 

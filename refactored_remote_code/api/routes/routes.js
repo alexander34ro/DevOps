@@ -28,24 +28,38 @@ router.get('/', (req, res, next) => {
             'who_id': currentUser._id
         })
             .then(followerUser => {
-                Promise.all([
+                if(followerUser == null){
+                    //display own messages
                     Message.find({
-                        'author_id': currentUser._id
-                    }),
-                    Message.find({
-                        'author_id': followerUser.whom_id
+                        "author_id": currentUser._id
                     })
-                ])
                     .then(messages => {
                         res.status(200).json({
-                            'result': Array.prototype.concat.apply([], messages)
+                            'result': messages
                         });
                     })
-                    .catch(err => {
-                        res.status(500).json({
-                            'err': err
+                } else {
+                    // display own+follower messages
+                    Promise.all([
+                        Message.find({
+                            'author_id': currentUser._id
+                        }),
+                        Message.find({
+                            'author_id': followerUser.whom_id
                         })
-                    })
+                    ])
+                        .then(messages => {
+                            res.status(200).json({
+                                'result': Array.prototype.concat.apply([], messages)
+                            });
+                        })
+                        .catch(err => {
+                            res.status(500).json({
+                                'err': err
+                            })
+                        })
+                }
+
             })
             .catch(err => {
                 res.status(500).json({ 'err': err });
