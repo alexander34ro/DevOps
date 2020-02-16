@@ -40,3 +40,4 @@ app.use("/", routes);
 
 
 app.listen(port, ()=> console.log("Listening to 8080..."));
+module.exports = app;
