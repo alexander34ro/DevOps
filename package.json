@@ -21,6 +21,6 @@
     "start": "node index.js",
     "test": "ava"
   },
-  "author": "",
+  "author": "blanao",
   "license": "ISC"
 }
