@@ -88,19 +88,29 @@ router.get("/msgs", (req, res, next) => {
         })
         .then(messagesResult => {
             let filtered_msgs = [];
-
-            for (const message of messagesResult) {
-                User.findById(message.author_id)
-                    .then(user => {
-                        filtered_msg = {};
-                        filtered_msg['content'] = message.text;
-                        filtered_msg['pub_date'] = message.pub_date;
-                        filtered_msg['user'] = user.username;
-                        filtered_msgs.push(filtered_msg);
-                        console.log(filtered_msgs);
-                    })
-                    .catch(err => console.log(err));
+            new Promise((resolve, reject) => {
+                for (const message of messagesResult) {
+                    User.findById(message.author_id)
+                        .then(user => {
+                            filtered_msg = {};
+                            filtered_msg['content'] = message.text;
+                            filtered_msg['pub_date'] = message.pub_date;
+                            filtered_msg['user'] = user.username;
+                            filtered_msgs.push(filtered_msg);
+                            console.log(filtered_msgs);
+                        })
+                        .catch(err => {
+                            console.log(err);
+                            reject();
+                        });
+                }
+                resolve();
+            }).then(result => {
+                console.log(filtered_msgs);
+                res.status(200).json({ filtered_msgs });
             }
+            )
+
             console.log(filtered_msgs);
             res.status(200).json({ filtered_msgs });
         })
