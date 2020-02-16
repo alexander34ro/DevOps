@@ -1,11 +1,16 @@
 # DevOps
 
-Repo with DevOps research
+Repository for academic DevOps research.
 
-Course repo: https://github.com/itu-devops/2020-spring
+---
 
+App can be found at https://minitwit-itu.herokuapp.com/
 
-We also have a cool Project!
+This repo follows the [ITU DevOps repository](https://github.com/itu-devops/2020-spring)
+
+We also have a [cool Project for tracking our backlog](https://github.com/alexander34ro/DevOps/projects/1)
+
+---
 
 Alex Ardelean  - aard@itu.dk
 
