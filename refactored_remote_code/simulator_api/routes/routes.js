@@ -97,22 +97,20 @@ router.get("/msgs", (req, res, next) => {
                             filtered_msg['pub_date'] = message.pub_date;
                             filtered_msg['user'] = user.username;
                             filtered_msgs.push(filtered_msg);
-                            console.log(filtered_msgs);
+                            if(messagesResult[messagesResult.length-1] == message){
+                                // last element
+                                resolve(filtered_msgs);
+                            }
                         })
                         .catch(err => {
                             console.log(err);
                             reject();
                         });
                 }
-                resolve();
             }).then(result => {
-                console.log(filtered_msgs);
                 res.status(200).json({ filtered_msgs });
             }
             )
-
-            console.log(filtered_msgs);
-            res.status(200).json({ filtered_msgs });
         })
         .catch(err => {
             res.status(500).json({ error: err })
@@ -203,7 +201,7 @@ router.post("/fllws/:username", async (req, res, next) => {
     if (!user_id) return res.status(404).json({ "err": "User not found" });
 
     if (req.body.keys == "follow") {
-        to_follow_user_id = req.body.follow;
+        const to_follow_user_id = await get_user_id(req.body.follow);
         if (!to_follow_user_id) {
             res.status(404).json({
                 "message": "no username to follow found"
@@ -221,7 +219,7 @@ router.post("/fllws/:username", async (req, res, next) => {
         }
 
     } else if (req.body.keys == "unfollow") {
-        to_unfollow_user_id = req.body.unfollow;
+        const to_unfollow_user_id = await get_user_id(req.body.unfollow);
         if (!to_unfollow_user_id) {
             res.status(404).json({
                 "message": "no user to unfollow found"
