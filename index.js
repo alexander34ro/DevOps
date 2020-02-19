@@ -9,7 +9,7 @@ app.use(cors());
 
 const dbPassword = 'nIfTcQjmAOFWH2kH'
 
-mongoose.connect('mongodb+srv://admin:' + dbPassword + '@cluster0-zb0x5.mongodb.net/test?retryWrites=true&w=majority',{ useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect('mongodb+srv://admin:' + dbPassword + '@cluster0-zb0x5.mongodb.net/prod?retryWrites=true&w=majority',{ useNewUrlParser: true, useUnifiedTopology: true });
 
 
 let port = process.env.PORT || 8080;
