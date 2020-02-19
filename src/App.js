@@ -4,8 +4,9 @@ import './App.css';
 import 'semantic-ui-css/semantic.min.css'
 import TwitMenu from './components/TwitMenu'
 import TwitFeed from './components/TwitFeed'
-import SignIn from './components/SignIn.js'
-import SignUp from './components/SignUp.js'
+import SignIn from './components/SignIn'
+import SignUp from './components/SignUp'
+import WhatsOnYourMind from './components/WhatsOnYourMind'
 
 import {
   Container,
@@ -76,6 +77,7 @@ const PublicFeed = () => (
   <div>
 
     <Container text style={{ marginTop: '7em' }}>
+      <WhatsOnYourMind/>
     <Message success>
       <Message.Header>Login Successfull</Message.Header>
       <p>Did you know it's been a while?</p>
