@@ -37,25 +37,13 @@ class TwitFeed extends React.Component {
   }
   render() {
     const { error, isLoaded, items } = this.state;
-    console.log("items:")
-    console.log(items)
-    console.log("--")
     return (
       <Feed size="large">
-        <ul>
           {items.map(item => (
-            <li key={item._id}>
-              {item.author_id}
-              {item.pub_date}
-              {item.text}
-            </li>
+            <Message name={item.author_id}
+            text={item.text}
+            date={item.pub_date}/>
           ))}
-        </ul>
-        <Message/>
-        <Message/>
-        <Message/>
-        <Message/>
-        <Message/>
       </Feed>
 
     )
