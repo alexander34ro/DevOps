@@ -1,1 +1,3 @@
-# API for our refactored React app
+# API
+
+Node.js and Express API for the refactored MiniTwit app
