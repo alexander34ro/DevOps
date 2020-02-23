@@ -2,6 +2,8 @@
 
 Repository for academic DevOps research.
 
+![Node.js CI](https://github.com/alexander34ro/DevOps/workflows/Node.js%20CI/badge.svg?event=check_suite)
+
 ---
 
 MiniTwit can be found at https://minitwit-itu.herokuapp.com/
