@@ -68,13 +68,16 @@ router.get('/', (req, res, next) => {
 })
 
 router.get('/public', (req, res, next) => {
-    Message.find()
-        .then(result => {
-            res.status(200).json({ result });
+    User.find()
+    .then(users => {
+        Message.find()
+        .then(messages => {
+            res.status(200).json({ messages, users });
         })
         .catch(err => {
             res.status(500).json({ error: err })
         });
+    })
 })
 
 router.get('/:username', (req, res, next) => {
@@ -162,22 +165,29 @@ router.get('/:username/unfollow', (req, res, next) => {
 })
 
 router.post('/add_message', (req, res, next) => {
-    const newMessage = new Message({
-        message_id: new mongoose.Types.ObjectId(),
-        author_id: currentUser._id,
-        text: req.body.text,
-        pub_date: new Date(),
-        flagged: req.body.flagged
-    });
-    newMessage.save()
-        .then(result => {
-            res.status(200).json(
-                {
-                    'result': result
-                }
-            );
+
+    if(!currentUser._id) {
+        res.status(401).json({
+            "message": "Unauthorized. Please log in"
         })
-        .catch(err => console.log(err));
+    } else {
+        const newMessage = new Message({
+            message_id: new mongoose.Types.ObjectId(),
+            author_id: currentUser._id,
+            text: req.body.text,
+            pub_date: new Date(),
+            flagged: req.body.flagged
+        });
+        newMessage.save()
+            .then(result => {
+                res.status(200).json(
+                    {
+                        'result': result
+                    }
+                );
+            })
+            .catch(err =>res.status(500).json({"err":err}));
+    }
 })
 
 router.post('/login', (req, res, next) => {
