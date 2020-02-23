@@ -1,5 +1,5 @@
 import React from 'react'
-import {Link, Redirect} from 'react-router-dom';
+import { Redirect} from 'react-router-dom';
 import { Button, Form, Grid, Header, Image, Message, Segment } from 'semantic-ui-react'
 
 class SignIn extends React.Component {
@@ -31,12 +31,12 @@ class SignIn extends React.Component {
       .then((result) => {
         result.json()
         console.log(result.status)
-        if(result.status == 401){
+        if(result.status === 401){
           this.setState({
             hasFailledToLogin: true,
             authSucces: false
           })
-        }else if(result.status == 200){
+        }else if(result.status === 200){
           this.setState({
             authSucces: true,
           })
