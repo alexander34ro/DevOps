@@ -18,8 +18,7 @@ class SignIn extends React.Component {
   }
 
   sendToApi = () => {
-    let data ={username: this.state.username,
-               password: this.state.password,}
+    let data ={username: this.state.username, password: this.state.password,}
     fetch('https://minitwit-api.herokuapp.com/login' , {
       method: "POST",
       headers: {
