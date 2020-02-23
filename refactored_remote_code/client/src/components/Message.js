@@ -1,6 +1,10 @@
 import React from 'react'
 import { Feed, Icon } from 'semantic-ui-react'
 class Message extends React.Component {
+  reportMsg() {
+    alert("Do you want to report this message ?")
+   
+  }
   render (){
     const name = this.props.name
     const text = this.props.text
@@ -18,7 +22,7 @@ class Message extends React.Component {
           </Feed.Extra>
           <Feed.Meta>
             <Feed.Like>
-              <Icon name='like' />5 Likes
+              <Icon name='flag' onClick={this.reportMsg}/>
             </Feed.Like>
           </Feed.Meta>
         </Feed.Content>
