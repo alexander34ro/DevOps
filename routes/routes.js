@@ -15,7 +15,11 @@ function get_user_id(username) {
             'username': username
         })
             .then(user => {
-                resolve(user._id);
+                if(user!= null){
+                    resolve(user._id);
+                } else {
+                    resolve(undefined);
+                }
             })
             .catch(err => {
                 console.log('err', err);
@@ -36,14 +40,15 @@ router.get("/latest", (req, res, next) => {
 
 router.post("/register", (req, res, next) => {
     update_latest(req.body.latest);
-    let err = "";
+    const user_id = get_user_id(req.body.username).then(user_id => {
+        let err = "";
     if (!req.body.username) {
         err = "You have to enter a username";
     } else if (!req.body.email || (!req.body.email.includes("@") && !req.body.email.includes("."))) {
         err = "You have to enter a valid email address";
     } else if (!req.body.password) {
         err = "You have to enter a password";
-    } else if (get_user_id(req.body.username) != undefined) {
+    } else if (user_id != undefined) {
         err = "Username already taken";
     } else {
         bcrypt.hash(req.body.password, 10, (err, hash) => {
@@ -61,7 +66,9 @@ router.post("/register", (req, res, next) => {
                 newUser.save()
                     .then(result => {
                         console.log("added new user", result);
-                        res.status(204);
+                        res.status(204).json({
+                            "message": "successful"
+                        });
                     })
                     .catch(err => res.status(500).json({
                         error: err
@@ -74,6 +81,8 @@ router.post("/register", (req, res, next) => {
             "error_msg": err
         })
     }
+    }).catch(err => console.log(err))
+
 })
 
 
