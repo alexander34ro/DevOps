@@ -16,6 +16,12 @@ We also have a [cool Project for tracking our backlog](https://github.com/alexan
 
 This repo follows the [ITU DevOps repository](https://github.com/itu-devops/2020-spring)
 
+`git subtree push --prefix refactored_remote_code/client origin production_client`
+
+`git subtree push --prefix refactored_remote_code/api origin production_api`
+
+`git subtree push --prefix refactored_remote_code/simulator_api origin production_simulator_api`
+
 ---
 
 Alex Ardelean  - aard@itu.dk
