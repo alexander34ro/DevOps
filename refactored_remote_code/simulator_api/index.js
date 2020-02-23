@@ -11,16 +11,16 @@ const dbPassword = 'nIfTcQjmAOFWH2kH'
 
 mongoose.connect('mongodb+srv://admin:' + dbPassword + '@cluster0-zb0x5.mongodb.net/prod?retryWrites=true&w=majority',{ useNewUrlParser: true, useUnifiedTopology: true });
 
-
-let port = process.env.PORT || 8080;
+let port = process.env.PORT || 8090;
 
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 
 const corsWhitelist = [
-    'http://localhost:8080/',
+    'http://localhost:8090/',
     'http://localhost:8100/',
-    'http://localhost:3000/'
+    'http://localhost:3000/',
+    'http://localhost:8080/'
 ]
 
 app.use((req, res, next)=>{
@@ -39,5 +39,4 @@ app.use((req, res, next)=>{
 app.use("/", routes);
 
 
-app.listen(port, ()=> console.log("Listening to 8080..."));
-module.exports = app;
+app.listen(port, ()=> console.log("Listening to 8090..."));
