@@ -78,14 +78,6 @@ const PublicFeed = () => (
 
     <Container text style={{ marginTop: '7em' }}>
       <WhatsOnYourMind/>
-    <Message success>
-      <Message.Header>Login Successfull</Message.Header>
-      <p>Did you know it's been a while?</p>
-    </Message>
-    <Message warning>
-      <Message.Header>Login Failled</Message.Header>
-      <p>Did you know it's been a while?</p>
-    </Message>
       <Header as='h1'>Public Feed</Header>
       <TwitFeed/>
     </Container>
