@@ -41,12 +41,12 @@ router.post("/register", (req, res, next) => {
         err = "You have to enter a username";
     } else if (!req.body.email || (!req.body.email.includes("@") && !req.body.email.includes("."))) {
         err = "You have to enter a valid email address";
-    } else if (!req.body.password) {
-        err = "You have to enter a password";
+    } else if (!req.body.pwd) {
+        err = "You have to enter a pwd";
     } else if (get_user_id(req.body.username) != undefined) {
         err = "Username already taken";
     } else {
-        bcrypt.hash(req.body.password, 10, (err, hash) => {
+        bcrypt.hash(req.body.pwd, 10, (err, hash) => {
             if (err) {
                 return res.status(500).json({
                     error: err
