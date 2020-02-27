@@ -22,6 +22,8 @@ As discussed in [Issue #26](https://github.com/alexander34ro/DevOps/issues/26), 
 
 For our infrastructure, we chose to deploy MiniTwit to Heroku using Dynos (and Docker for virtualization). A discussion on this topic can be found in [Issue #27](https://github.com/alexander34ro/DevOps/issues/27)
 
+Furthermore, we chose to implement CI/CD using GitHub Actions and Heroku for the reasons stated in [Issue #35](https://github.com/alexander34ro/DevOps/issues/35)
+
 Please read our guidelines before contributing to this repository. ([Contribute.md](https://github.com/alexander34ro/DevOps/blob/master/Contribute.md))
 
 ---
