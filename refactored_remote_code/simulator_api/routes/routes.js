@@ -29,7 +29,7 @@ function get_user_id(username) {
 }
 
 function update_latest(value) {
-  LATEST = value != -1 ? value : LATEST;
+  LATEST = value != -1 && value != undefined ? value : LATEST;
   console.log("latest:", LATEST);
 }
 
