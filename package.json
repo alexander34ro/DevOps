@@ -13,6 +13,7 @@
   "author": "blanao",
   "license": "ISC",
   "dependencies": {
+    "@sentry/node": "^5.13.1",
     "bcrypt": "^3.0.8",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
