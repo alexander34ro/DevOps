@@ -30,9 +30,11 @@ function get_user_id(username) {
 
 function update_latest(value) {
   LATEST = value != -1 ? value : LATEST;
+  console.log("latest:", LATEST);
 }
 
 router.get("/latest", (req, res, next) => {
+  console.log("latest:", LATEST);
   res.status(200).json({
     latest: LATEST
   });
