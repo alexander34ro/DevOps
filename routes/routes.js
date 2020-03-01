@@ -111,7 +111,7 @@ router.post("/register", (req, res, next) => {
 // TODO: solve async
 router.get("/msgs", (req, res, next) => {
   log_request(req);
-  update_latest(req.body.latest);
+  update_latest(req.query.latest);
   const number_messages = req.body.no;
   Message.find()
     .limit(number_messages)
@@ -150,7 +150,7 @@ router.get("/msgs", (req, res, next) => {
 
 router.get("/msgs/:username", async (req, res, next) => {
   log_request(req);
-  update_latest(req.body.latest);
+  update_latest(req.query.latest);
   const number_messages = req.body.no;
 
   const user_id = await get_user_id(req.params.username);
@@ -185,7 +185,7 @@ router.get("/msgs/:username", async (req, res, next) => {
 
 router.post("/msgs/:username", async (req, res, next) => {
   log_request(req);
-  update_latest(req.body.latest);
+  update_latest(req.query.latest);
 
   const user_id = await get_user_id(req.params.username);
   if (!user_id) return res.status(404).json({ err: "User not found" });
@@ -207,7 +207,7 @@ router.post("/msgs/:username", async (req, res, next) => {
 
 router.get("/fllws/:username", async (req, res, next) => {
   log_request(req);
-  update_latest(req.body.latest);
+  update_latest(req.query.latest);
   const user_id = await get_user_id(req.params.username);
   if (!user_id) return res.status(404).json({ err: "User not found" });
 
@@ -229,7 +229,7 @@ router.get("/fllws/:username", async (req, res, next) => {
 
 router.post("/fllws/:username", async (req, res, next) => {
   log_request(req);
-  update_latest(req.body.latest);
+  update_latest(req.query.latest);
 
   const user_id = await get_user_id(req.params.username);
   if (!user_id) return res.status(404).json({ err: "User not found" });
