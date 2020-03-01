@@ -34,9 +34,9 @@ function log_request(r) {
     console.log(
       "Request:",
       [
-        r.params,
-        r.query,
-        r.body
+        { params: r.params },
+        { query: r.query },
+        { body: r.body }
       ]
     );
   }
