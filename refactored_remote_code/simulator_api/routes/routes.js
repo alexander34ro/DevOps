@@ -55,7 +55,7 @@ router.get("/latest", (req, res, next) => {
 
 router.post("/register", (req, res, next) => {
   log_request(req);
-  update_latest(req.body.latest);
+  update_latest(req.query.latest);
   const user_id = get_user_id(req.body.username)
     .then(user_id => {
       let err = "";
