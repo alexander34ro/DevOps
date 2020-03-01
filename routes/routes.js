@@ -30,7 +30,7 @@ function get_user_id(username) {
 
 function update_latest(value) {
   LATEST = value != -1 && value != undefined ? value : LATEST;
-  console.log("latest:", LATEST);
+  console.log("received value:", value, "- latest:", LATEST);
 }
 
 router.get("/latest", (req, res, next) => {
