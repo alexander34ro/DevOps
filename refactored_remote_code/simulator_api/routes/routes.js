@@ -42,6 +42,7 @@ router.get("/latest", (req, res, next) => {
 
 router.post("/register", (req, res, next) => {
   update_latest(req.body.latest);
+  console.log(req)
   const user_id = get_user_id(req.body.username)
     .then(user_id => {
       let err = "";
@@ -96,6 +97,7 @@ router.post("/register", (req, res, next) => {
 
 // TODO: solve async
 router.get("/msgs", (req, res, next) => {
+  console.log(req)
   update_latest(req.body.latest);
   const number_messages = req.body.no;
   Message.find()
@@ -134,6 +136,7 @@ router.get("/msgs", (req, res, next) => {
 });
 
 router.get("/msgs/:username", async (req, res, next) => {
+  console.log(req)
   update_latest(req.body.latest);
   const number_messages = req.body.no;
 
@@ -168,6 +171,7 @@ router.get("/msgs/:username", async (req, res, next) => {
 });
 
 router.post("/msgs/:username", async (req, res, next) => {
+  console.log(req)
   update_latest(req.body.latest);
 
   const user_id = await get_user_id(req.params.username);
@@ -189,6 +193,7 @@ router.post("/msgs/:username", async (req, res, next) => {
 });
 
 router.get("/fllws/:username", async (req, res, next) => {
+  console.log(req)
   update_latest(req.body.latest);
   const user_id = await get_user_id(req.params.username);
   if (!user_id) return res.status(404).json({ err: "User not found" });
@@ -210,6 +215,7 @@ router.get("/fllws/:username", async (req, res, next) => {
 });
 
 router.post("/fllws/:username", async (req, res, next) => {
+  console.log(req)
   update_latest(req.body.latest);
 
   const user_id = await get_user_id(req.params.username);
