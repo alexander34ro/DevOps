@@ -8,6 +8,7 @@ const Follower = require("../models/follower");
 const Message = require("../models/message");
 
 let LATEST = 0;
+const LOGS = true;
 
 function get_user_id(username) {
   return new Promise((resolve, reject) => {
@@ -28,21 +29,33 @@ function get_user_id(username) {
   });
 }
 
+function log_request(r) {
+  if (LOGS) {
+    console.log(
+      "Request:",
+      [
+        r.params,
+        r.query,
+        r.body
+      ]
+    );
+  }
+}
+
 function update_latest(value) {
   LATEST = value != -1 && value != undefined ? value : LATEST;
   console.log("received value:", value, "- latest:", LATEST);
 }
 
 router.get("/latest", (req, res, next) => {
-  console.log("latest:", LATEST);
   res.status(200).json({
     latest: LATEST
   });
 });
 
 router.post("/register", (req, res, next) => {
+  log_request(req);
   update_latest(req.body.latest);
-  console.log(req)
   const user_id = get_user_id(req.body.username)
     .then(user_id => {
       let err = "";
@@ -97,7 +110,7 @@ router.post("/register", (req, res, next) => {
 
 // TODO: solve async
 router.get("/msgs", (req, res, next) => {
-  console.log(req)
+  log_request(req);
   update_latest(req.body.latest);
   const number_messages = req.body.no;
   Message.find()
@@ -136,7 +149,7 @@ router.get("/msgs", (req, res, next) => {
 });
 
 router.get("/msgs/:username", async (req, res, next) => {
-  console.log(req)
+  log_request(req);
   update_latest(req.body.latest);
   const number_messages = req.body.no;
 
@@ -171,7 +184,7 @@ router.get("/msgs/:username", async (req, res, next) => {
 });
 
 router.post("/msgs/:username", async (req, res, next) => {
-  console.log(req)
+  log_request(req);
   update_latest(req.body.latest);
 
   const user_id = await get_user_id(req.params.username);
@@ -193,7 +206,7 @@ router.post("/msgs/:username", async (req, res, next) => {
 });
 
 router.get("/fllws/:username", async (req, res, next) => {
-  console.log(req)
+  log_request(req);
   update_latest(req.body.latest);
   const user_id = await get_user_id(req.params.username);
   if (!user_id) return res.status(404).json({ err: "User not found" });
@@ -215,7 +228,7 @@ router.get("/fllws/:username", async (req, res, next) => {
 });
 
 router.post("/fllws/:username", async (req, res, next) => {
-  console.log(req)
+  log_request(req);
   update_latest(req.body.latest);
 
   const user_id = await get_user_id(req.params.username);
