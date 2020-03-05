@@ -112,7 +112,8 @@ router.post("/register", (req, res, next) => {
 router.get("/msgs", (req, res, next) => {
   log_request(req);
   update_latest(req.query.latest);
-  const number_messages = req.query.no ? req.query.no : 0;
+  const number_messages = req.query.no ? Number(req.query.no) : 0;
+  console.log(number_messages);
   Message.find()
     .limit(number_messages)
     .sort({
@@ -152,7 +153,7 @@ router.get("/msgs", (req, res, next) => {
 router.get("/msgs/:username", async (req, res, next) => {
   log_request(req);
   update_latest(req.query.latest);
-  const number_messages = req.body.no;
+  const number_messages = req.query.no ? Number(req.query.no) : 0;
 
   const user_id = await get_user_id(req.params.username);
 
