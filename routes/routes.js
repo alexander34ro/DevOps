@@ -112,36 +112,37 @@ router.post("/register", (req, res, next) => {
 router.get("/msgs", (req, res, next) => {
   log_request(req);
   update_latest(req.query.latest);
-  const number_messages = req.body.no;
+  const number_messages = req.query.no ? req.query.no : 0;
   Message.find()
     .limit(number_messages)
     .sort({
       pub_date: -1
     })
     .then(messagesResult => {
-      let filtered_msgs = [];
-      new Promise((resolve, reject) => {
-        for (const message of messagesResult) {
-          User.findById(message.author_id)
-            .then(user => {
-              filtered_msg = {};
-              filtered_msg["content"] = message.text;
-              filtered_msg["pub_date"] = message.pub_date;
-              filtered_msg["user"] = user.username;
-              filtered_msgs.push(filtered_msg);
-              if (messagesResult[messagesResult.length - 1] == message) {
-                // last element
-                resolve(filtered_msgs);
-              }
-            })
-            .catch(err => {
-              console.log(err);
-              reject();
-            });
-        }
-      }).then(result => {
-        res.status(200).json({ filtered_msgs });
-      });
+      console.log('messagesResult', messagesResult);
+      res.status(200).json(messagesResult);
+      // let filtered_msgs = [];
+      // new Promise((resolve, reject) => {
+      //   for (const message of messagesResult) {
+      //     User.findById(message.author_id)
+      //       .then(user => {
+      //         filtered_msg = {};
+      //         filtered_msg["content"] = message.text;
+      //         filtered_msg["pub_date"] = message.pub_date;
+      //         filtered_msg["user"] = user.username;
+      //         filtered_msgs.push(filtered_msg);
+      //         if (messagesResult[messagesResult.length - 1] == message) {
+      //           // last element
+      //           resolve(filtered_msgs);
+      //         }
+      //       })
+      //       .catch(err => {
+      //         reject(err);
+      //       });
+      //   }
+      // }).then(result => {
+      //   res.status(200).json({ result });
+      // }).catch(err => res.status(500).json(err));
     })
     .catch(err => {
       res.status(500).json({ error: err });
