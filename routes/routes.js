@@ -193,9 +193,9 @@ router.post("/msgs/:username", async (req, res, next) => {
   const newMessage = new Message({
     message_id: new mongoose.Types.ObjectId(),
     author_id: user_id,
-    text: req.body.text,
+    text: req.body.content,
     pub_date: new Date(),
-    flagged: req.body.flagged
+    flagged: false
   });
   newMessage
     .save()
