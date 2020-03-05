@@ -11,24 +11,6 @@ let LATEST = 0;
 const LOGS = true;
 
 function get_user_id(username) {
-<<<<<<< HEAD
-    return new Promise((resolve, reject) => {
-        User.findOne({
-            'username': username
-        })
-            .then(user => {
-                if(user!= null){
-                    resolve(user._id);
-                } else {
-                    resolve(undefined);
-                }
-            })
-            .catch(err => {
-                console.log('err', err);
-                reject();
-            })
-    });
-=======
   return new Promise((resolve, reject) => {
     User.findOne({
       username: username
@@ -58,7 +40,6 @@ function log_request(r) {
       ]
     );
   }
->>>>>>> c0ba568bd638c514dc02f4fd1e509b472da338a9
 }
 
 function update_latest(value) {
@@ -73,34 +54,21 @@ router.get("/latest", (req, res, next) => {
 });
 
 router.post("/register", (req, res, next) => {
-<<<<<<< HEAD
-    update_latest(req.body.latest);
-    const user_id = get_user_id(req.body.username).then(user_id => {
-        let err = "";
-    if (!req.body.username) {
-=======
   log_request(req);
   update_latest(req.query.latest);
-  const user_id = get_user_id(req.body.username)
+  get_user_id(req.body.username)
     .then(user_id => {
       let err = "";
       if (!req.body.username) {
->>>>>>> c0ba568bd638c514dc02f4fd1e509b472da338a9
         err = "You have to enter a username";
       } else if (
         !req.body.email ||
         (!req.body.email.includes("@") && !req.body.email.includes("."))
       ) {
         err = "You have to enter a valid email address";
-<<<<<<< HEAD
-    } else if (!req.body.password) {
-        err = "You have to enter a password";
-    } else if (user_id != undefined) {
-=======
       } else if (!req.body.pwd) {
         err = "You have to enter a pwd";
       } else if (user_id != undefined) {
->>>>>>> c0ba568bd638c514dc02f4fd1e509b472da338a9
         err = "Username already taken";
       } else {
         bcrypt.hash(req.body.pwd, 10, (err, hash) => {
@@ -127,42 +95,18 @@ router.post("/register", (req, res, next) => {
                 res.status(500).json({
                   error: err
                 })
-<<<<<<< HEAD
-                newUser.save()
-                    .then(result => {
-                        console.log("added new user", result);
-                        res.status(204).json({
-                            "message": "successful"
-                        });
-                    })
-                    .catch(err => res.status(500).json({
-                        error: err
-                    }));
-            }
-=======
               );
           }
->>>>>>> c0ba568bd638c514dc02f4fd1e509b472da338a9
         });
       }
       if (err.length != 0) {
         res.status(400).json({
-<<<<<<< HEAD
-            "error_msg": err
-        })
-    }
-    }).catch(err => console.log(err))
-
-})
-
-=======
           error_msg: err
         });
       }
     })
     .catch(err => console.log(err));
 });
->>>>>>> c0ba568bd638c514dc02f4fd1e509b472da338a9
 
 // TODO: solve async
 router.get("/msgs", (req, res, next) => {
@@ -290,7 +234,7 @@ router.post("/fllws/:username", async (req, res, next) => {
   const user_id = await get_user_id(req.params.username);
   if (!user_id) return res.status(404).json({ err: "User not found" });
 
-  if (req.body.keys == "follow") {
+  if (req.body.follow) {
     const to_follow_user_id = await get_user_id(req.body.follow);
     if (!to_follow_user_id) {
       res.status(404).json({
@@ -308,7 +252,7 @@ router.post("/fllws/:username", async (req, res, next) => {
         })
         .catch(err => console.log(err));
     }
-  } else if (req.body.keys == "unfollow") {
+  } else if (req.body.keys.unfollow) {
     const to_unfollow_user_id = await get_user_id(req.body.unfollow);
     if (!to_unfollow_user_id) {
       res.status(404).json({
@@ -322,7 +266,9 @@ router.post("/fllws/:username", async (req, res, next) => {
     }).then(result => {
       res.status(204).json(result);
     });
-  }
+  } else res.status(404).json({
+      message: "No follow or unfollow"
+  })
 });
 
 module.exports = router;
