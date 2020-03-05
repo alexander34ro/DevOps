@@ -252,7 +252,7 @@ router.post("/fllws/:username", async (req, res, next) => {
         })
         .catch(err => console.log(err));
     }
-  } else if (req.body.keys.unfollow) {
+  } else if (req.body.unfollow) {
     const to_unfollow_user_id = await get_user_id(req.body.unfollow);
     if (!to_unfollow_user_id) {
       res.status(404).json({
