@@ -194,6 +194,7 @@ router.post("/msgs/:username", async (req, res, next) => {
   const newMessage = new Message({
     message_id: new mongoose.Types.ObjectId(),
     author_id: user_id,
+    author_username: req.params.username,
     text: req.body.content,
     pub_date: new Date(),
     flagged: false
