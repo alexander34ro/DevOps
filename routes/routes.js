@@ -48,7 +48,7 @@ function update_latest(value) {
 }
 
 router.get("/latest", (req, res, next) => {
-  res.status(200).json({
+  return res.status(200).json({
     latest: LATEST
   });
 });
@@ -87,7 +87,7 @@ router.post("/register", (req, res, next) => {
               .save()
               .then(result => {
                 console.log("added new user", result);
-                res.status(204).json({
+                return res.status(204).json({
                   message: "successful"
                 });
               })
@@ -100,7 +100,7 @@ router.post("/register", (req, res, next) => {
         });
       }
       if (err.length != 0) {
-        res.status(400).json({
+        return res.status(400).json({
           error_msg: err
         });
       }
@@ -121,7 +121,7 @@ router.get("/msgs", (req, res, next) => {
     })
     .then(messagesResult => {
       console.log('messagesResult', messagesResult);
-      res.status(200).json(messagesResult);
+      return res.status(200).json(messagesResult);
       // let filtered_msgs = [];
       // new Promise((resolve, reject) => {
       //   for (const message of messagesResult) {
@@ -146,7 +146,7 @@ router.get("/msgs", (req, res, next) => {
       // }).catch(err => res.status(500).json(err));
     })
     .catch(err => {
-      res.status(500).json({ error: err });
+      return res.status(500).json({ error: err });
     });
 });
 
@@ -178,10 +178,10 @@ router.get("/msgs/:username", async (req, res, next) => {
         filtered_msg["user"] = req.params.username;
         filtered_msgs.push(filtered_msg);
       });
-      res.status(200).json({ filtered_msgs });
+      return res.status(200).json({ filtered_msgs });
     })
     .catch(err => {
-      res.status(500).json({ error: err });
+      return res.status(500).json({ error: err });
     });
 });
 
@@ -203,7 +203,7 @@ router.post("/msgs/:username", async (req, res, next) => {
   newMessage
     .save()
     .then(result => {
-      res.status(204).json(result);
+      return res.status(204).json(result);
     })
     .catch(err => res.status(500).json(err));
 });
@@ -223,7 +223,7 @@ router.get("/fllws/:username", async (req, res, next) => {
         follows.push(follower.whom_id);
       });
       console.log("follows", follows);
-      res.status(200).json({
+      return res.status(200).json({
         follows: follows
       });
     })
@@ -239,8 +239,10 @@ router.post("/fllws/:username", async (req, res, next) => {
 
   if (req.body.follow) {
     const to_follow_user_id = await get_user_id(req.body.follow);
+    console.log("FOLLOWER USER ID: " + user_id);
+    console.log("TO FOLLOW USER ID: " + to_follow_user_id);
     if (!to_follow_user_id) {
-      res.status(404).json({
+      return res.status(404).json({
         message: "no username to follow found"
       });
     } else {
@@ -251,14 +253,14 @@ router.post("/fllws/:username", async (req, res, next) => {
       newFollower
         .save()
         .then(result => {
-          res.status(204).json(result);
+          return res.status(204).json(result);
         })
         .catch(err => console.log(err));
     }
   } else if (req.body.unfollow) {
     const to_unfollow_user_id = await get_user_id(req.body.unfollow);
     if (!to_unfollow_user_id) {
-      res.status(404).json({
+      return res.status(404).json({
         message: "no user to unfollow found"
       });
     }
@@ -267,10 +269,10 @@ router.post("/fllws/:username", async (req, res, next) => {
       who_id: user_id,
       whom_id: to_unfollow_user_id
     }).then(result => {
-      res.status(204).json(result);
+      return res.status(204).json(result);
     });
-  } else res.status(404).json({
-      message: "No follow or unfollow"
+  } else return res.status(404).json({
+    message: "No follow or unfollow"
   })
 });
 
