@@ -4,6 +4,14 @@ const bodyParser = require("body-parser");
 const routes = require("./routes/routes");
 const cors = require('cors');
 const mongoose = require('mongoose');
+const Sentry = require('@sentry/node');
+
+Sentry.init({
+  dsn: "https://435d4b6577fc4daba667b426c9d01388@sentry.io/3253377"
+});
+
+// The request handler must be the first middleware on the app
+app.use(Sentry.Handlers.requestHandler());
 
 app.use(cors());
 
@@ -38,5 +46,11 @@ app.use((req, res, next)=>{
 
 app.use("/", routes);
 
+app.get("/debug-sentry", function mainHandler(req, res) {
+  throw new Error("My first Sentry error!");
+});
+
+// The error handler must be before any other error middleware
+app.use(Sentry.Handlers.errorHandler());
 
 app.listen(port, ()=> console.log("Listening to 8090..."));

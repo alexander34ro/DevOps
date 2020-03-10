@@ -14,13 +14,15 @@ This application is built using JavaScript and Node.js and uses a MongoDB databa
 
 The discussion that went into choosing our main stack can be found in [Issue #15](https://github.com/alexander34ro/DevOps/issues/15)
 
-For front-end we went with X as discussed in [Issue #18](https://github.com/alexander34ro/DevOps/issues/18)
+For front-end we went with SemanticUI as discussed in [Issue #18](https://github.com/alexander34ro/DevOps/issues/18)
 
 Our test suite uses Ava. This has been thoroughly discussed in [Issue #20](https://github.com/alexander34ro/DevOps/issues/20)
 
 As discussed in [Issue #26](https://github.com/alexander34ro/DevOps/issues/26), we prefer Mongoose over both the native driver and Sequelize.
 
-For our infrastructure, we chose to deploy MiniTwit to Heroku using Dynos and Docker for virtualization. A discussion on this topic can be found in [Issue #27](https://github.com/alexander34ro/DevOps/issues/27)
+For our infrastructure, we chose to deploy MiniTwit to Heroku using Dynos (and Docker for virtualization). A discussion on this topic can be found in [Issue #27](https://github.com/alexander34ro/DevOps/issues/27)
+
+Furthermore, we chose to implement CI/CD using GitHub Actions and Heroku for the reasons stated in [Issue #35](https://github.com/alexander34ro/DevOps/issues/35)
 
 Please read our guidelines before contributing to this repository. ([Contribute.md](https://github.com/alexander34ro/DevOps/blob/master/Contribute.md))
 
