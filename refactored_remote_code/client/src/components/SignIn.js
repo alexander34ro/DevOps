@@ -1,5 +1,5 @@
 import React from 'react'
-import {Link} from 'react-router-dom';
+import { Redirect} from 'react-router-dom';
 import { Button, Form, Grid, Header, Image, Message, Segment } from 'semantic-ui-react'
 
 class SignIn extends React.Component {
@@ -8,6 +8,8 @@ class SignIn extends React.Component {
     this.state = {
       username: '',
       password: '',
+      authSucces: false,
+      hasFailledToLogin: false,
     };
   }
 
@@ -26,19 +28,49 @@ class SignIn extends React.Component {
       },
       body: JSON.stringify(data)
     })
-      .then((result) => result.json())
+      .then((result) => {
+        result.json()
+        console.log(result.status)
+        if(result.status === 401){
+          this.setState({
+            hasFailledToLogin: true,
+            authSucces: false
+          })
+        }else if(result.status === 200){
+          this.setState({
+            authSucces: true,
+          })
+          console.log(result)
+        }
+      })
       .then((info) => {
         console.log(info)
       })
+      .catch((error) => {
+      })
+    if(this.state.authSucces)
+      console.log("redi")
   }
 
+
   render() {
+    let statusMsg = null;
+    if(this.state.hasFailledToLogin){
+      statusMsg = (<Message negative>
+                     <Message.Header> Login Failled</Message.Header>
+                     <p>Email or password not correct.</p>
+                   </Message>)
+    }
+    if(this.state.authSucces)
+      return(<Redirect to="/"/>)
+
     return (
       <Grid textAlign='center' style={{ height: '100vh' }} verticalAlign='middle'>
         <Grid.Column style={{ maxWidth: 450 }}>
           <Header as='h2' color='teal' textAlign='center'>
             Log-in to your account
           </Header>
+          {statusMsg}
           <Form size='large'>
             <Segment stacked>
               <Form.Input

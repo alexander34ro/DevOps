@@ -32,13 +32,20 @@ class WhatsOnYourMind extends React.Component {
   }
 
   render() {
+
+    var label = "Whats on your mind ? "
+    if( localStorage.getItem('username') ){
+	label ="Whats on your mind " + localStorage.getItem('username') + " ?"
+    }
+
+
     return (
       <Segment >
         <Form >
           <Form.Group widths='equal'>
             <Form.TextArea
               id='form-textarea-control-opinion'
-              label='Whats on your mind ?'
+              label={label}
               placeholder='type here..'
                 name='text'
                 onChange={this.changeHandler}

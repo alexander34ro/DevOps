@@ -1,6 +1,6 @@
 import React from 'react'
-import {Link} from 'react-router-dom';
-import { Button, Form, Grid, Header, Image, Message, Segment } from 'semantic-ui-react'
+import {Redirect} from 'react-router-dom';
+import { Button, Form, Grid, Header, Message, Segment } from 'semantic-ui-react'
 
 class SignUp extends React.Component {
   constructor(props) {
@@ -9,7 +9,9 @@ class SignUp extends React.Component {
       username: '',
       password: '',
       password2: '',
-      email: ''
+      email: '',
+      registerSuccess: false,
+      failledAttempt: false,
     };
   }
 
@@ -33,22 +35,45 @@ class SignUp extends React.Component {
       },
       body: JSON.stringify(data)
     })
-      .then((result) => result.json())
+      .then((result) => {
+        result.json();
+        console.log(result.status)
+        console.log(result)
+        if(result.status == 200){
+            this.setState({registerSuccess: true,
+            		   failledAttempt: false })
+            		   console.log("Success");
+            localStorage.setItem('username', this.state.username)
+
+        }else if ( result.status == 409 ){
+            this.setState({registerSuccess: false,
+            		   failledAttempt: true})
+            		   console.log("failled Sign Up")
+
+        }
+      })
       .then((info) => {
         console.log(info)
-        if(info.result){
-          console.log("success register")
-        }else if(info.message){
-          console.log("failed register")
-          console.log(info.message)
-        }
       })
   }
 
   render() {
+    if(this.state.registerSuccess)
+      return(<Redirect to="/"/>);
+
+    let statusMsg = null;
+
+    if(this.state.failledAttempt){
+      statusMsg = (<Message negative>
+                     <Message.Header> Sign Up Failled</Message.Header>
+                     <p>Email already used for another account.</p>
+                   </Message>)
+    }
+
     return (
       <Grid textAlign='center' style={{ height: '100vh' }} verticalAlign='middle'>
         <Grid.Column style={{ maxWidth: 450 }}>
+          {statusMsg}
           <Header as='h2' color='teal' textAlign='center'>
             Sign up
           </Header>
