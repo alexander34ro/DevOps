@@ -56,13 +56,13 @@ router.get("/", (req, res, next) => {
             })
             .catch(err => {
               res.status(500).json({
-                err: err
+                err
               });
             });
         }
       })
       .catch(err => {
-        res.status(500).json({ err: err });
+        res.status(500).json({ err });
       });
   }
 });
@@ -78,9 +78,9 @@ router.get("/public", (req, res, next) => {
 });
 
 router.get("/:username", (req, res, next) => {
-  const {username} = req.params;
+  const { username } = req.params;
   User.findOne({
-    username: username
+    username
   })
     .then(user => {
       Message.find({
@@ -118,7 +118,7 @@ router.get("/:username/follow", (req, res, next) => {
           .save()
           .then(result => {
             res.status(200).json({
-              result: result
+              result
             });
           })
           .catch(err => console.log(err));
@@ -146,7 +146,7 @@ router.get("/:username/unfollow", (req, res, next) => {
         })
           .then(result => {
             res.status(200).json({
-              result: result
+              result
             });
           })
           .catch(err => console.log(err));
@@ -170,17 +170,17 @@ router.post("/add_message", (req, res, next) => {
     .save()
     .then(result => {
       res.status(200).json({
-        result: result
+        result
       });
     })
     .catch(err => console.log(err));
 });
 
 router.post("/login", (req, res, next) => {
-  const {username} = req.body;
-  const {password} = req.body;
+  const { username } = req.body;
+  const { password } = req.body;
   User.find({
-    username: username
+    username
   })
     .then(user => {
       if (user.length < 1) {
@@ -218,38 +218,36 @@ router.post("/register", (req, res, next) => {
   User.find({
     username: req.body.username
   }).then(user => {
-        if(user.length>=1){
-            return res.status(409).json({
-                message: "username already exists"
-            })
-        } 
-            bcrypt.hash(req.body.password, 10, (err, hash) => {
-                if(err){
-                    return res.status(500).json({
-                        error: err
-                    })
-                } else {
-                    const newUser = new User({
-                        _id: new mongoose.Types.ObjectId(),
-                        username: req.body.username,
-                        email: req.body.email,
-                        pw_hash: hash
-                    })
-                    newUser.save()
-                    .then(result => {
-                        res.status(200).json(
-                            {
-                                'result': result
-                            }
-                        );
-                    })
-                    .catch(err => res.status(500).json({
-                        error: err
-                    }));
-                }
-            });
-        
-    })
+    if (user.length >= 1) {
+      return res.status(409).json({
+        message: "username already exists"
+      });
+    }
+    bcrypt.hash(req.body.password, 10, (err, hash) => {
+      if (err) {
+        return res.status(500).json({
+          error: err
+        });
+      }
+      const newUser = new User({
+        _id: new mongoose.Types.ObjectId(),
+        username: req.body.username,
+        email: req.body.email,
+        pw_hash: hash
+      });
+      newUser
+        .save()
+        .then(result => {
+          res.status(200).json({
+            result: result
+          });
+        })
+        .catch(err =>
+          res.status(500).json({
+            error: err
+          })
+        );
+    });
   });
 });
 
