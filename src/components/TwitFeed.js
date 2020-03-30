@@ -1,50 +1,92 @@
 import React from 'react'
-import { Feed, Icon } from 'semantic-ui-react'
+import { Feed, Segment, Dimmer, Image, Loader, Pagination, Grid } from 'semantic-ui-react'
 import Message from './Message'
 
-// const TwitFeed = () => (
 class TwitFeed extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      error: null,
-      isLoaded: false,
-      items: []
+      items: [],
+      activePage: 1,
+      numberPages:1
     };
   }
-    componentDidMount() {
-    fetch("https://minitwit-api.herokuapp.com/public")
+
+  fetchData(pageNumber) {
+    fetch("https://minitwit-api.herokuapp.com/public?p="+pageNumber)
       .then(res => res.json())
       .then(
         (result) => {
-          console.log("success fetching api")
+          console.log("success fetching api", result)
           this.setState({
             isLoaded: true,
-            items: result.messages
+            items: result.messages,
+            numberPages: result.pageCount,
+            activePage: result.page
           });
         },
-        // Note: it's important to handle errors here
-        // instead of a catch() block so that we don't swallow
-        // exceptions from actual bugs in components.
+
         (error) => {
           this.setState({
-            isLoaded: true,
-            error
+            isLoaded: true
           });
-            console.log("fail fetching api")
+            console.log("fail fetching api", error)
         }
       )
   }
+
+  componentDidMount() {
+    this.fetchData(1);
+  }
+
+  handlePaginationChange = (e, { activePage }) => {
+    this.setState({ activePage });
+    this.fetchData(activePage);
+  }
+
   render() {
-    const { error, isLoaded, items } = this.state;
+    const { isLoaded, items } = this.state;
     return (
-      <Feed size="large">
-          {items.map(item => (
-            <Message name={item.author_id}
-            text={item.text}
-            date={item.pub_date}/>
-          ))}
-      </Feed>
+      <div>
+      {
+        this.state.isLoaded ?
+        <div>
+          <Feed size="large">
+              {
+                items.map(item => (
+                  <Message key={item.message_id.toString()}
+                  name={item.author_username}
+                  text={item.text}
+                  date={item.pub_date}
+                  />
+                ))
+              }
+          </Feed>
+
+          <Grid>
+            <Grid.Column textAlign="center">
+            <Pagination
+              activePage={this.state.activePage}
+              onPageChange={this.handlePaginationChange}
+              totalPages={this.state.numberPages}
+              style={{ marginBottom: '2em'}}
+            />
+            </Grid.Column>
+          </Grid>
+        </div>
+        
+
+        : 
+
+        <Segment>
+          <Dimmer active style={{ height: '15vh' }}>
+            <Loader size="big" inverted>Loading</Loader>
+          </Dimmer>
+    
+          <Image src='/images/wireframe/short-paragraph.png' />
+        </Segment>
+      }
+      </div>
 
     )
 

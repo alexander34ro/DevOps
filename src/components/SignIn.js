@@ -1,13 +1,14 @@
 import React from 'react'
-import {Link} from 'react-router-dom';
-import { Button, Form, Grid, Header, Image, Message, Segment } from 'semantic-ui-react'
+import { Button, Form, Grid, Header, Message, Segment } from 'semantic-ui-react'
 
 class SignIn extends React.Component {
   constructor(props) {
     super(props);
+
     this.state = {
       username: '',
       password: '',
+      errorMessage: false
     };
   }
 
@@ -18,7 +19,8 @@ class SignIn extends React.Component {
   }
 
   sendToApi = () => {
-    let data ={username: this.state.username, password: this.state.password,}
+
+    const data = {username: this.state.username, password: this.state.password}
     fetch('https://minitwit-api.herokuapp.com/login' , {
       method: "POST",
       headers: {
@@ -26,10 +28,15 @@ class SignIn extends React.Component {
       },
       body: JSON.stringify(data)
     })
-      .then((result) => result.json())
-      .then((info) => {
-        console.log(info)
+      .then((result) => {
+        if(result.status == 200){
+          this.props.history.push('/');
+        } else {
+          console.log('login failed');
+          this.setState({errorMessage: true})
+        }
       })
+
   }
 
   render() {
@@ -45,7 +52,7 @@ class SignIn extends React.Component {
                 fluid
                 icon='user'
                 iconPosition='left'
-                placeholder='E-mail address'
+                placeholder='Username'
                 name='username'
                 onChange={this.changeHandler}
               />
@@ -67,6 +74,17 @@ class SignIn extends React.Component {
           <Message>
             New to us? <a href='/signup'>Sign Up</a>
           </Message>
+          {
+          this.state.errorMessage ? 
+          <Message
+            error
+            header='Sign in failed'
+            list={[
+              'Make sure you correctly entered your credentials',
+            ]}
+          />
+          : null
+        }
         </Grid.Column>
       </Grid>
     )

@@ -1,12 +1,12 @@
 import React from 'react'
-import {Link} from 'react-router-dom';
-import { Button, Form, Grid, Header, Image, Message, Segment } from 'semantic-ui-react'
+import { Button, Form, Message, Segment } from 'semantic-ui-react'
 
 class WhatsOnYourMind extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       text: '',
+      successMessage: false
     };
   }
 
@@ -25,10 +25,16 @@ class WhatsOnYourMind extends React.Component {
       },
       body: JSON.stringify(data)
     })
-      .then((result) => result.json())
-      .then((info) => {
-        console.log(info)
+      .then((result) => {
+        if(result.status == 200){
+          this.setState({successMessage: true})
+          setTimeout(() => {
+            this.setState({successMessage: false})
+            window.location.reload();
+          }, 3500);
+        }
       })
+      .catch(err => console.log(err))
   }
 
   render() {
@@ -46,6 +52,16 @@ class WhatsOnYourMind extends React.Component {
           </Form.Group>
           <Button type='submit' onClick={this.sendToApi} >Submit</Button>
         </Form>
+        {
+            this.state.successMessage ? 
+            <Message
+              success
+              header='Hooray!'
+              content='Your message is now available to your followers'
+            />
+
+            : null
+          }
       </Segment>
     )
   }

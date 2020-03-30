@@ -4,14 +4,7 @@ import 'semantic-ui-css/semantic.min.css'
 import { Link } from 'react-router-dom'
 import {
   Container,
-  Divider,
-  Dropdown,
-  Grid,
-  Header,
-  Image,
-  List,
-  Menu,
-  Segment,
+  Menu
 } from 'semantic-ui-react'
 
 export default function TwitMenu() {

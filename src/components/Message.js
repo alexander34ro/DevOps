@@ -14,7 +14,7 @@ class Message extends React.Component {
         <Feed.Label image='https://react.semantic-ui.com/images/avatar/small/elliot.jpg' />
         <Feed.Content>
           <Feed.Summary>
-            <a>{name}</a> posted on his page
+            <a href={'/'+name}>{name}</a> posted on his page
             <Feed.Date>{date}</Feed.Date>
           </Feed.Summary>
           <Feed.Extra text>

@@ -1,6 +1,5 @@
 import React from 'react'
-import {Link} from 'react-router-dom';
-import { Button, Form, Grid, Header, Image, Message, Segment } from 'semantic-ui-react'
+import { Button, Form, Grid, Header, Message, Segment } from 'semantic-ui-react'
 
 class SignUp extends React.Component {
   constructor(props) {
@@ -9,7 +8,10 @@ class SignUp extends React.Component {
       username: '',
       password: '',
       password2: '',
-      email: ''
+      email: '',
+      errorMessage: false,
+      successMessage: false,
+      errorMessageUser: false
     };
   }
 
@@ -21,28 +23,39 @@ class SignUp extends React.Component {
   }
 
   sendToApi = () => {
-    console.log(this.state)
-    let data ={username: this.state.username,
+    this.setState({
+      errorMessage: false,
+      errorMessageUser: false
+    })
+
+    const data = {username: this.state.username,
                password: this.state.password,
                email: this.state.email}
-    console.log(data)
-    fetch('https://minitwit-api.herokuapp.com/register' , {
-      method: "POST",
-      headers: {
-        'Content-type': 'application/json'
-      },
-      body: JSON.stringify(data)
-    })
-      .then((result) => result.json())
-      .then((info) => {
-        console.log(info)
-        if(info.result){
-          console.log("success register")
-        }else if(info.message){
-          console.log("failed register")
-          console.log(info.message)
-        }
-      })
+    
+      if(data.username && data.password && data.email){
+        fetch('https://minitwit-api.herokuapp.com/register' , {
+          method: "POST",
+          headers: {
+            'Content-type': 'application/json'
+          },
+          body: JSON.stringify(data)
+        })
+          .then((result) => {
+            if(result.status == 200){
+              console.log('Sign up success')
+              this.setState({successMessage: true})
+            } else if(result.status == 409){
+              console.log('Username exists')
+              this.setState({errorMessageUser: true})
+            } else {
+              this.setState({errorMessage: true})
+              console.log('Sign up error')
+            }
+          });
+      } else {
+        this.setState({errorMessage: true})
+      }
+      
   }
 
   render() {
@@ -97,8 +110,44 @@ class SignUp extends React.Component {
           <Message>
             Already a member? <a href='/signin'>Sign In</a>
           </Message>
+          {
+            this.state.successMessage ? 
+            <Message
+              success
+              header='Your user registration was successful'
+              content='You may now log-in with the username you have chosen.'
+            />
+
+            : null
+          }
+          {
+            this.state.errorMessage ? 
+            <Message
+              error
+              header='Sign up failed'
+              list={[
+                'Make sure you entered a valid email address',
+                'Make sure you entered correctly the passwords',
+              ]}
+            />
+            : null
+          }
+          {
+            this.state.errorMessageUser ? 
+            <Message
+              error
+              header='Sign up failed'
+              list={[
+                'Username already exists. Please choose another one',
+              ]}
+            />
+            : null
+          }
         </Grid.Column>
+
+        
       </Grid>
+      
     )
   }
 }

@@ -1,5 +1,4 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
 import 'semantic-ui-css/semantic.min.css'
 import TwitMenu from './components/TwitMenu'
@@ -7,25 +6,17 @@ import TwitFeed from './components/TwitFeed'
 import SignIn from './components/SignIn'
 import SignUp from './components/SignUp'
 import WhatsOnYourMind from './components/WhatsOnYourMind'
+import UserMessages from './components/UserMessages'
 
 import {
   Container,
-  Message,
-  Divider,
-  Dropdown,
-  Grid,
-  Header,
-  Image,
-  List,
-  Menu,
-  Segment,
+  Header
 } from 'semantic-ui-react'
 
 import {
   BrowserRouter as Router,
   Switch,
-  Route,
-  Link
+  Route
 } from "react-router-dom";
 
 // This site has 3 pages, all of which are rendered
@@ -50,18 +41,15 @@ export default function BasicExample() {
           of them to render at a time
         */}
         <Switch>
-          <Route exact path="/">
-            <PublicFeed />
+          <Route exact path="/" component={PublicFeed}>
           </Route>
-          <Route path="/public">
-            <PublicFeed />
+          <Route path="/public" component={PublicFeed}>
           </Route>
-          <Route path="/signin">
-            <SignIn/>
+          <Route path="/signin" component={SignIn}>
           </Route>
-          <Route path="/signup">
-            <SignUp/>
+          <Route path="/signup" component={SignUp}>
           </Route>
+          <Route path="/:user" component={UserMessages}></Route>
         </Switch>
     </Router>
   );
