@@ -67,17 +67,34 @@ router.get('/', (req, res, next) => {
     }
 })
 
-router.get('/public', (req, res, next) => {
-    User.find()
-    .then(users => {
-        Message.find()
+router.get('/public', async (req, res, next) => {
+
+    const pageSize = 10;
+
+    const messageCount = await Message.countDocuments();
+    const pageCount = Math.ceil(messageCount / pageSize);
+
+    let page = parseInt(req.query.p);
+    if (!page) { page = 1;}
+    if (page > pageCount) {
+        page = pageCount
+    }
+
+    Message.find()
+    .sort({ pub_date : -1 })
+    .skip(pageSize*(page-1))
+    .limit(pageSize)
         .then(messages => {
-            res.status(200).json({ messages, users });
+
+            res.status(200).json({
+                "page": page,
+                "pageCount": pageCount,
+                "messages": messages
+              });
         })
         .catch(err => {
             res.status(500).json({ error: err })
         });
-    })
 })
 
 router.get('/:username', (req, res, next) => {
@@ -89,6 +106,7 @@ router.get('/:username', (req, res, next) => {
         Message.find({
             'author_id': user._id
         })
+        .sort({"pub_date":-1})
         .then(userMessages => {
             res.status(200).json({
                 'response': userMessages
@@ -174,6 +192,7 @@ router.post('/add_message', (req, res, next) => {
         const newMessage = new Message({
             message_id: new mongoose.Types.ObjectId(),
             author_id: currentUser._id,
+            author_username: currentUser.username,
             text: req.body.text,
             pub_date: new Date(),
             flagged: req.body.flagged

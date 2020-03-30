@@ -20,7 +20,8 @@ app.use(bodyParser.json());
 const corsWhitelist = [
     'http://localhost:8080/',
     'http://localhost:8100/',
-    'http://localhost:3000/'
+    'http://localhost:3000/',
+    'https://minitwit-client.herokuapp.com/'
 ]
 
 app.use((req, res, next)=>{
