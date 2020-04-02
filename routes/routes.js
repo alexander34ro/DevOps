@@ -109,7 +109,7 @@ router.post("/register", (req, res, next) => {
 });
 
 // TODO: solve async
-router.get("/msgs", (req, res, next) => {
+router.get("/msgs", async (req, res, next) => {
 
   log_request(req);
   update_latest(req.query.latest);
