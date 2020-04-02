@@ -110,44 +110,38 @@ router.post("/register", (req, res, next) => {
 
 // TODO: solve async
 router.get("/msgs", (req, res, next) => {
+
   log_request(req);
   update_latest(req.query.latest);
   const number_messages = req.query.no ? Number(req.query.no) : 0;
   console.log(number_messages);
+
+  const pageSize = 10;
+
+  const messageCount = await Message.countDocuments();
+  const pageCount = Math.ceil(messageCount / pageSize);
+
+  let page = parseInt(req.query.p);
+  if (!page) { page = 1;}
+  if (page > pageCount) {
+      page = pageCount
+  }
+
   Message.find()
-    .limit(number_messages)
-    .sort({
-      pub_date: -1
-    })
-    .then(messagesResult => {
-      console.log('messagesResult', messagesResult);
-      return res.status(200).json(messagesResult);
-      // let filtered_msgs = [];
-      // new Promise((resolve, reject) => {
-      //   for (const message of messagesResult) {
-      //     User.findById(message.author_id)
-      //       .then(user => {
-      //         filtered_msg = {};
-      //         filtered_msg["content"] = message.text;
-      //         filtered_msg["pub_date"] = message.pub_date;
-      //         filtered_msg["user"] = user.username;
-      //         filtered_msgs.push(filtered_msg);
-      //         if (messagesResult[messagesResult.length - 1] == message) {
-      //           // last element
-      //           resolve(filtered_msgs);
-      //         }
-      //       })
-      //       .catch(err => {
-      //         reject(err);
-      //       });
-      //   }
-      // }).then(result => {
-      //   res.status(200).json({ result });
-      // }).catch(err => res.status(500).json(err));
-    })
-    .catch(err => {
-      return res.status(500).json({ error: err });
-    });
+  .sort({ pub_date : -1 })
+  .skip(pageSize*(page-1))
+  .limit(pageSize)
+      .then(messages => {
+
+          res.status(200).json({
+              "page": page,
+              "pageCount": pageCount,
+              "messagesResult": messages
+            });
+      })
+      .catch(err => {
+          res.status(500).json({ error: err })
+      });
 });
 
 router.get("/msgs/:username", async (req, res, next) => {
