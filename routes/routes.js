@@ -153,26 +153,25 @@ router.get("/msgs/:username", async (req, res, next) => {
 
   if (!user_id) return res.status(404).json({ err: "User not found" });
 
+  const pageSize = 10;
+
+  const messageCount = await Message.countDocuments();
+  const pageCount = Math.ceil(messageCount / pageSize);
+
+  let page = parseInt(req.query.p);
+  if (!page) { page = 1;}
+  if (page > pageCount) {
+      page = pageCount
+  }
+
   Message.find({
     author_id: user_id
   })
-    .limit(number_messages)
-    .sort({
-      pub_date: -1
-    })
+    .sort({ pub_date : -1 })
+    .skip(pageSize*(page-1))
+    .limit(pageSize)
     .then(userMessages => {
-      console.log("userMessages", userMessages);
-      var filtered_msgs = [];
-
-      userMessages.forEach(message => {
-        console.log("message", message);
-        filtered_msg = {};
-        filtered_msg["content"] = message.text;
-        filtered_msg["pub_date"] = message.pub_date;
-        filtered_msg["user"] = req.params.username;
-        filtered_msgs.push(filtered_msg);
-      });
-      return res.status(200).json({ filtered_msgs });
+      return res.status(200).json({ userMessages });
     })
     .catch(err => {
       return res.status(500).json({ error: err });
