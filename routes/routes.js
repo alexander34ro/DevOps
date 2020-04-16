@@ -133,14 +133,14 @@ router.get("/msgs", async (req, res, next) => {
   .limit(pageSize)
       .then(messages => {
 
-          res.status(200).json({
+          return res.status(200).json({
               "page": page,
               "pageCount": pageCount,
               "messagesResult": messages
             });
       })
       .catch(err => {
-          res.status(500).json({ error: err })
+          return res.status(500).json({ error: err })
       });
 });
 
@@ -171,7 +171,11 @@ router.get("/msgs/:username", async (req, res, next) => {
     .skip(pageSize*(page-1))
     .limit(pageSize)
     .then(userMessages => {
-      return res.status(200).json({ userMessages });
+      return res.status(200).json({
+        "page": page,
+        "pageCount": pageCount,
+        "messagesResult": userMessages
+      });
     })
     .catch(err => {
       return res.status(500).json({ error: err });
