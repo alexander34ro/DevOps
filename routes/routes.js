@@ -155,7 +155,9 @@ router.get("/msgs/:username", async (req, res, next) => {
 
   const pageSize = 10;
 
-  const messageCount = await Message.countDocuments();
+  const messageCount = await Message.countDocuments({
+    author_id: user_id
+  });
   const pageCount = Math.ceil(messageCount / pageSize);
 
   let page = parseInt(req.query.p);
