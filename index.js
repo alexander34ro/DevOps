@@ -1,56 +1,68 @@
-const express = require("express");
-const app = express();
-const bodyParser = require("body-parser");
-const routes = require("./routes/routes");
-const cors = require('cors');
-const mongoose = require('mongoose');
-const Sentry = require('@sentry/node');
+const throng = require('throng')
 
-Sentry.init({
-  dsn: "https://435d4b6577fc4daba667b426c9d01388@sentry.io/3253377"
-});
+const WORKERS = process.env.WEB_CONCURRENCY || 1
+const PORT = process.env.PORT || 3000
 
-// The request handler must be the first middleware on the app
-app.use(Sentry.Handlers.requestHandler());
+throng({
+  workers: WORKERS,
+  lifetime: Infinity
+}, start)
 
-app.use(cors());
+function start() {
+  const express = require("express");
+  const app = express();
+  const bodyParser = require("body-parser");
+  const routes = require("./routes/routes");
+  const cors = require('cors');
+  const mongoose = require('mongoose');
+  const Sentry = require('@sentry/node');
 
-const dbPassword = 'nIfTcQjmAOFWH2kH'
+  Sentry.init({
+    dsn: "https://435d4b6577fc4daba667b426c9d01388@sentry.io/3253377"
+  });
 
-mongoose.connect('mongodb+srv://admin:' + dbPassword + '@cluster0-zb0x5.mongodb.net/prod?retryWrites=true&w=majority',{ useNewUrlParser: true, useUnifiedTopology: true });
+  // The request handler must be the first middleware on the app
+  app.use(Sentry.Handlers.requestHandler());
 
-let port = process.env.PORT || 8090;
+  app.use(cors());
 
-app.use(bodyParser.urlencoded({extended: false}));
-app.use(bodyParser.json());
+  const dbPassword = 'nIfTcQjmAOFWH2kH'
 
-const corsWhitelist = [
-    'http://localhost:8090/',
-    'http://localhost:8100/',
-    'http://localhost:3000/',
-    'http://localhost:8080/'
-]
+  mongoose.connect('mongodb+srv://admin:' + dbPassword + '@cluster0-zb0x5.mongodb.net/prod?retryWrites=true&w=majority',{ useNewUrlParser: true, useUnifiedTopology: true });
 
-app.use((req, res, next)=>{
-    res.header('Access-Control-Allow-Origin', '*');
-    if(corsWhitelist.indexOf(req.headers.origin)!== -1){
-        res.header('Access-Control-Allow-Origin', req.headers.origin);
-        res.header('Access-Control-Allow-Headers', 'Origin, Content-Type, X-Requested-With, Accept, Authorization');
-    }
-    if(req.method === 'OPTIONS'){
-        res.header('Access-Control-Allow-Methods','GET, PUT, POST, PATCH, DELETE');
-        res.status(200).json({});
-    }
-    next();
-})
+  let port = process.env.PORT || 8090;
 
-app.use("/", routes);
+  app.use(bodyParser.urlencoded({extended: false}));
+  app.use(bodyParser.json());
 
-app.get("/debug-sentry", function mainHandler(req, res) {
-  throw new Error("My first Sentry error!");
-});
+  const corsWhitelist = [
+      'http://localhost:8090/',
+      'http://localhost:8100/',
+      'http://localhost:3000/',
+      'http://localhost:8080/'
+  ]
 
-// The error handler must be before any other error middleware
-app.use(Sentry.Handlers.errorHandler());
+  app.use((req, res, next)=>{
+      res.header('Access-Control-Allow-Origin', '*');
+      if(corsWhitelist.indexOf(req.headers.origin)!== -1){
+          res.header('Access-Control-Allow-Origin', req.headers.origin);
+          res.header('Access-Control-Allow-Headers', 'Origin, Content-Type, X-Requested-With, Accept, Authorization');
+      }
+      if(req.method === 'OPTIONS'){
+          res.header('Access-Control-Allow-Methods','GET, PUT, POST, PATCH, DELETE');
+          res.status(200).json({});
+      }
+      next();
+  })
 
-app.listen(port, ()=> console.log("Listening to 8090..."));
+  app.use("/", routes);
+
+  app.get("/debug-sentry", function mainHandler(req, res) {
+    throw new Error("My first Sentry error!");
+  });
+
+  // The error handler must be before any other error middleware
+  app.use(Sentry.Handlers.errorHandler());
+
+  app.listen(port, ()=> console.log("Listening to 8090..."));
+}
