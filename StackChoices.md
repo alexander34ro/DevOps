@@ -1,14 +1,13 @@
 This application is built using JavaScript and Node.js and uses a MongoDB database. List with our main dependencies:
 
-- Express - backend framework
-
-- Mongoose - DB abstraction layer
-
-- React - frontend framework
-
-- Bulma/Semantic - UI library
-
-- Ava - tests framework
+- Node - Enables server-side JavaScript
+- Express - Backend framework for our APIs
+- Mongoose - DB abstraction layer that connects to our Mongo database
+- React - Frontend framework for the MiniTwit client
+- Semantic - UI library
+- Ava - Framework for writing readable tests
+- ESLint & Prettier - Static analysis tools that check code complexity and format 
+- Throng - Clustering multiple workers for autoscaling and load balancing
 
 ---
 
